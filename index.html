@@ -270,7 +270,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
           <th data-k="topRate">トップ率</th>
           <th data-k="rentai">連対率</th>
           <th data-k="avoid">ラス回避率</th>
-          <th class="l" data-k="form">直近5試合</th>
+          <th class="l" data-k="form">直近10試合</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -354,7 +354,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   }
   const players = [...P.values()].map(p => ({...p,
     avg: p.sum/p.n, topRate: p.c1/p.n, rentai: (p.c1+p.c2)/p.n, avoid: 1 - p.c4/p.n,
-    q: p.n >= QUAL, form: p.seq.slice(-5)}));
+    q: p.n >= QUAL, form: p.seq.slice(-10)}));
   const official = players.filter(p => p.q).sort((a,b) => a.avg-b.avg || b.c1-a.c1 || b.n-a.n);
   official.forEach((p,i) => p.pos = i+1);
   const others = players.filter(p => !p.q).sort((a,b) => b.n-a.n || a.avg-b.avg);
@@ -394,7 +394,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
     const r = el('div','srow-rates');
     [['トップ率',p.topRate],['連対率',p.rentai],['ラス回避率',p.avoid]].forEach(([k,v]) => { const d = el('div','',k); d.appendChild(el('b','num',pct(v))); r.appendChild(d); });
     m.appendChild(r);
-    const f = el('div','srow-foot','直近5試合'); f.appendChild(formCell(p.form)); m.appendChild(f);
+    const f = el('div','srow-foot','直近10試合'); f.appendChild(formCell(p.form)); m.appendChild(f);
     row.appendChild(m);
     return row;
   }
