@@ -89,6 +89,9 @@ tr.ref td{color:var(--muted)} tr.ref .pname{font-weight:500}
 .f1{background:var(--r1)} .f2{background:var(--r2)} .f3{background:var(--r3)} .f4{background:var(--r4);color:var(--fg)!important}
 .cut td{border-top:2px dashed var(--line)}
 .note{font-size:12px;color:var(--muted);margin:10px 0 0}
+.more{display:block;width:100%;margin-top:10px;background:var(--deep);color:var(--fg);border:1px solid var(--line);padding:12px;font:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;border-radius:2px}
+.more:hover,.more:focus-visible{border-color:var(--gold);color:var(--gold-2);outline:none}
+.swipe-hint{display:none}
 
 /* players */
 .cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
@@ -133,6 +136,31 @@ select:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 footer{border-top:1px solid var(--line);margin-top:48px}
 footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
+@media (max-width:640px){
+  html,body{font-size:14px}
+  .bar{position:sticky;top:0;z-index:20}
+  .bar .wrap{padding-block:10px;gap:8px}
+  nav{width:100%;justify-content:space-between}
+  nav a{padding:6px 4px;font-size:12px}
+  .hero .wrap{padding-block:24px 20px;gap:18px}
+  .leader{padding:14px 16px}
+  .leader-stats b{font-size:26px}
+  section{padding-block:32px 4px;scroll-margin-top:96px}
+  .kpi{padding:12px 4px}
+  .kpi b{font-size:24px}
+  .sec-head h2{font-size:18px}
+  table{min-width:0}
+  .hm{display:none}
+  th,td{padding:10px 6px}
+  .pos{font-size:18px;width:auto}
+  .pname{font-size:15px}
+  .form i{width:16px;height:16px;font-size:10px}
+  .cards{grid-auto-flow:column;grid-auto-columns:80%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-right:16px}
+  .card{scroll-snap-align:start}
+  .swipe-hint{display:block;font-size:11px;color:var(--muted);margin:8px 0 0}
+  .match{grid-template-columns:60px 1fr}
+  .match-date b{font-size:22px}
+}
 @media (max-width:760px){
   .hero .wrap{grid-template-columns:1fr}
   .hero .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -191,7 +219,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   <section id="standings">
     <div class="sec-head">
       <h2><em>STANDINGS</em>順位表</h2>
-      <p>見出しをクリックで並べ替え</p>
+      <p>見出しを押すと並べ替え</p>
     </div>
     <div class="tbl-wrap">
       <table id="standTbl">
@@ -201,18 +229,19 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
           <th data-k="n">試合</th>
           <th data-k="avg">平均着順</th>
           <th data-k="c1">1着</th>
-          <th data-k="c2">2着</th>
-          <th data-k="c3">3着</th>
-          <th data-k="c4">4着</th>
-          <th data-k="topRate">トップ率</th>
-          <th data-k="rentai">連対率</th>
-          <th data-k="avoid">ラス回避率</th>
+          <th class="hm" data-k="c2">2着</th>
+          <th class="hm" data-k="c3">3着</th>
+          <th class="hm" data-k="c4">4着</th>
+          <th class="hm" data-k="topRate">トップ率</th>
+          <th class="hm" data-k="rentai">連対率</th>
+          <th class="hm" data-k="avoid">ラス回避率</th>
           <th class="l" data-k="form">直近5試合</th>
         </tr></thead>
         <tbody></tbody>
       </table>
     </div>
-    <p class="note">3試合以上出場した選手を平均着順の小さい順に並べています（同じ場合はトップ数の多い順）。2試合以下の選手は点線の下に参考として載せています。</p>
+    <button class="more" id="refBtn" type="button" aria-expanded="false"></button>
+    <p class="note">3試合以上出場した選手を平均着順の小さい順に並べています（同じ場合はトップ数の多い順）。2試合以下の選手は参考記録として、ボタンで表示できます。スマホでは主な列だけを表示しています。</p>
   </section>
 
   <section id="players">
@@ -224,6 +253,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
       <span><i class="f1"></i>1着</span><span><i class="f2"></i>2着</span><span><i class="f3"></i>3着</span><span><i class="f4"></i>4着</span>
     </div>
     <div class="cards" id="cards"></div>
+    <p class="swipe-hint">左右にスワイプすると他の選手が見られます</p>
   </section>
 
   <section id="matches">
@@ -236,6 +266,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
       <select id="who"><option value="">全選手</option></select>
     </div>
     <div class="matches" id="matchList"></div>
+    <button class="more" id="moreBtn" type="button"></button>
   </section>
 
   <section id="rules">
@@ -307,7 +338,10 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   // standings
   const tbody = document.querySelector('#standTbl tbody');
   const formCell = (seq) => { const s = el('span','form'); for (const k of seq) s.appendChild(el('i','f'+k,k)); return s; };
-  let sortKey = 'pos', sortDir = 1;
+  let sortKey = 'pos', sortDir = 1, showRef = false;
+  const refBtn = document.getElementById('refBtn');
+  refBtn.textContent = `参考記録（2試合以下の${others.length}人）を表示`;
+  refBtn.addEventListener('click', () => { showRef = !showRef; refBtn.textContent = showRef ? '参考記録を隠す' : `参考記録（2試合以下の${others.length}人）を表示`; refBtn.setAttribute('aria-expanded', showRef); renderTable(); });
   function renderTable(){
     tbody.replaceChildren();
     const cmp = (a,b) => {
@@ -318,16 +352,17 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
     const blocks = sortKey === 'pos' ? [official, others] : [[...official].sort(cmp), [...others].sort(cmp)];
     blocks.forEach((list, bi) => list.forEach((p, i) => {
       const tr = el('tr', p.q ? '' : 'ref');
+      if (!p.q && !showRef) tr.hidden = true;
       if (bi === 1 && i === 0) tr.classList.add('cut');
       tr.appendChild(el('td', 'l pos' + (p.pos && p.pos <= 3 ? ' pos-'+p.pos : ''), p.pos ?? '—'));
       tr.appendChild(el('td', 'l pname', p.name));
       tr.appendChild(el('td', '', p.n));
       tr.appendChild(el('td', '', p.avg.toFixed(2)));
-      tr.appendChild(el('td', '', p.c1)); tr.appendChild(el('td', '', p.c2));
-      tr.appendChild(el('td', '', p.c3)); tr.appendChild(el('td', '', p.c4));
-      tr.appendChild(el('td', '', pct(p.topRate)));
-      tr.appendChild(el('td', '', pct(p.rentai)));
-      tr.appendChild(el('td', '', pct(p.avoid)));
+      tr.appendChild(el('td', '', p.c1)); tr.appendChild(el('td', 'hm', p.c2));
+      tr.appendChild(el('td', 'hm', p.c3)); tr.appendChild(el('td', 'hm', p.c4));
+      tr.appendChild(el('td', 'hm', pct(p.topRate)));
+      tr.appendChild(el('td', 'hm', pct(p.rentai)));
+      tr.appendChild(el('td', 'hm', pct(p.avoid)));
       const fc = el('td','l'); fc.appendChild(formCell(p.form)); tr.appendChild(fc);
       tbody.appendChild(tr);
     }));
@@ -371,12 +406,17 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   const who = document.getElementById('who');
   [...players].sort((a,b) => b.n-a.n || a.name.localeCompare(b.name,'ja')).forEach(p => who.appendChild(new Option(`${p.name}（${p.n}）`, p.name)));
   const list = document.getElementById('matchList');
+  const moreBtn = document.getElementById('moreBtn');
+  const PAGE = 6; let showAll = false;
+  moreBtn.addEventListener('click', () => { showAll = !showAll; renderMatches(); });
   function renderMatches(){
     list.replaceChildren();
     const f = who.value;
-    for (const d of [...dates].reverse()) {
+    const ds = [...dates].reverse().filter(d => !f || games.get(d).some(r => r.name === f));
+    moreBtn.hidden = ds.length <= PAGE;
+    moreBtn.textContent = showAll ? '最近の試合だけ表示' : `すべての試合を表示（全${ds.length}試合）`;
+    for (const d of (showAll ? ds : ds.slice(0, PAGE))) {
       const g = games.get(d);
-      if (f && !g.some(r => r.name === f)) continue;
       const m = el('article','match' + (f && g[0].name === f ? ' hl' : ''));
       const dt = el('div','match-date'); dt.appendChild(el('b','num',md(d))); dt.appendChild(el('span','',g[0].pt ? '着順pt' : '点数'));
       m.appendChild(dt);
@@ -392,7 +432,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
       list.appendChild(m);
     }
   }
-  who.addEventListener('change', renderMatches);
+  who.addEventListener('change', () => { showAll = false; renderMatches(); });
   renderMatches();
 })();
 </script>
