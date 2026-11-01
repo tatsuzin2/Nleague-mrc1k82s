@@ -91,22 +91,45 @@ tr.ref td{color:var(--muted)} tr.ref .pname{font-weight:500}
 .note{font-size:12px;color:var(--muted);margin:10px 0 0}
 .more{display:block;width:100%;margin-top:10px;background:var(--deep);color:var(--fg);border:1px solid var(--line);padding:12px;font:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;border-radius:2px}
 .more:hover,.more:focus-visible{border-color:var(--gold);color:var(--gold-2);outline:none}
-.swipe-hint{display:none}
+.slist,.msort{display:none}
+.srow{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px;padding:12px;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow.ref{opacity:.75}
+.srow .pos{font-size:22px;line-height:1.1;padding:0}
+.srow-main{display:grid;gap:6px;min-width:0}
+.srow-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.srow-head .pname{font-size:16px;overflow-wrap:anywhere}
+.srow-avg{white-space:nowrap;font-size:11px;color:var(--muted)}
+.srow-avg b{font-family:var(--display);font-weight:400;font-size:22px;color:var(--fg);margin-left:4px}
+.srow-counts{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;color:var(--muted)}
+.srow-counts b{color:var(--fg);font-weight:700;margin-left:3px}
+.srow-counts i{display:inline-block;width:9px;height:9px;margin-right:3px;vertical-align:-1px}
+.srow-rates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font-size:11px;color:var(--muted)}
+.srow-rates b{display:block;color:var(--fg);font-size:14px;font-weight:700}
+.srow-foot{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
 
 /* players */
-.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
-.card{background:var(--deep);border:1px solid var(--line);position:relative;overflow:hidden;display:grid;min-width:0}
-.card-top{padding:16px 16px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:linear-gradient(160deg,#1c263b,var(--deep))}
-.card-rank{font-family:var(--display);font-size:46px;line-height:.9;color:var(--line)}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr))}
+@media (min-width:980px){.cards{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.card{background:var(--deep);border:1px solid var(--line);position:relative;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card-photo{position:relative;aspect-ratio:4/5;background:radial-gradient(120% 90% at 50% 20%,#24304a,#121a2a 70%);overflow:hidden}
+.card-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.card-photo svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:72%;height:auto;opacity:.5}
+.card-photo::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(11,15,26,.92));pointer-events:none}
+.card-rank{position:absolute;top:8px;left:10px;z-index:1;font-family:var(--display);font-size:clamp(30px,6vw,44px);line-height:1;color:var(--fg);text-shadow:0 2px 8px rgba(0,0,0,.6)}
 .card.q1 .card-rank{color:var(--r1)} .card.q2 .card-rank{color:var(--r2)} .card.q3 .card-rank{color:var(--r3)}
-.card-name{font-size:20px;font-weight:900;line-height:1.2;overflow-wrap:anywhere}
-.card-sub{font-size:11px;color:var(--muted);letter-spacing:.1em}
-.dist{display:flex;height:8px;margin:0 16px;background:var(--panel)}
+.card-nameplate{position:absolute;left:12px;right:12px;bottom:10px;z-index:1}
+.card-name{font-size:clamp(17px,3.2vw,22px);font-weight:900;line-height:1.2;overflow-wrap:anywhere;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.card-sub{font-size:11px;color:var(--muted);letter-spacing:.06em}
+.dist{display:flex;height:6px;background:var(--panel)}
 .dist span{display:block;height:100%}
-.card-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:12px 16px 16px;gap:8px}
-.card-stats div{display:grid}
-.card-stats b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1}
-.card-stats span{font-size:10px;color:var(--muted);letter-spacing:.1em}
+.card-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:10px 12px 12px;gap:6px}
+.card-stats div{display:grid;min-width:0}
+.card-stats b{font-family:var(--display);font-weight:400;font-size:clamp(16px,3.4vw,21px);line-height:1.1;white-space:nowrap}
+.card-stats span{font-size:10px;color:var(--muted);letter-spacing:.04em;white-space:nowrap}
+.card-counts{display:flex;gap:4px;padding:0 12px 12px;flex-wrap:wrap}
+.card-counts span{font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:3px}
+.card-counts i{width:8px;height:8px;display:inline-block}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:12px}
 .legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
 
@@ -149,15 +172,15 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   .kpi{padding:12px 4px}
   .kpi b{font-size:24px}
   .sec-head h2{font-size:18px}
-  table{min-width:0}
-  .hm{display:none}
-  th,td{padding:10px 6px}
-  .pos{font-size:18px;width:auto}
-  .pname{font-size:15px}
-  .form i{width:16px;height:16px;font-size:10px}
-  .cards{grid-auto-flow:column;grid-auto-columns:80%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-right:16px}
-  .card{scroll-snap-align:start}
-  .swipe-hint{display:block;font-size:11px;color:var(--muted);margin:8px 0 0}
+  .form i{width:17px;height:17px;font-size:10px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .card-stats{padding:8px 8px 10px;gap:4px}
+  .card-counts{padding:0 8px 10px}
+  .card-nameplate{left:8px;right:8px;bottom:8px}
+  .tbl-wrap{display:none}
+  .slist{display:block;border:1px solid var(--line);background:var(--deep)}
+  .msort{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .msort label{font-size:12px;color:var(--muted)}
   .match{grid-template-columns:60px 1fr}
   .match-date b{font-size:22px}
 }
@@ -221,6 +244,17 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
       <h2><em>STANDINGS</em>順位表</h2>
       <p>見出しを押すと並べ替え</p>
     </div>
+    <div class="msort">
+      <label for="msort">並べ替え</label>
+      <select id="msort">
+        <option value="pos">順位</option>
+        <option value="n">試合数</option>
+        <option value="c1">1着の回数</option>
+        <option value="topRate">トップ率</option>
+        <option value="rentai">連対率</option>
+        <option value="avoid">ラス回避率</option>
+      </select>
+    </div>
     <div class="tbl-wrap">
       <table id="standTbl">
         <thead><tr>
@@ -229,31 +263,31 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
           <th data-k="n">試合</th>
           <th data-k="avg">平均着順</th>
           <th data-k="c1">1着</th>
-          <th class="hm" data-k="c2">2着</th>
-          <th class="hm" data-k="c3">3着</th>
-          <th class="hm" data-k="c4">4着</th>
-          <th class="hm" data-k="topRate">トップ率</th>
-          <th class="hm" data-k="rentai">連対率</th>
-          <th class="hm" data-k="avoid">ラス回避率</th>
+          <th data-k="c2">2着</th>
+          <th data-k="c3">3着</th>
+          <th data-k="c4">4着</th>
+          <th data-k="topRate">トップ率</th>
+          <th data-k="rentai">連対率</th>
+          <th data-k="avoid">ラス回避率</th>
           <th class="l" data-k="form">直近5試合</th>
         </tr></thead>
         <tbody></tbody>
       </table>
     </div>
+    <div class="slist" id="standList"></div>
     <button class="more" id="refBtn" type="button" aria-expanded="false"></button>
-    <p class="note">3試合以上出場した選手を平均着順の小さい順に並べています（同じ場合はトップ数の多い順）。2試合以下の選手は参考記録として、ボタンで表示できます。スマホでは主な列だけを表示しています。</p>
+    <p class="note">3試合以上出場した選手を平均着順の小さい順に並べています（同じ場合はトップ数の多い順）。2試合以下の選手は参考記録として、ボタンで表示できます。</p>
   </section>
 
   <section id="players">
     <div class="sec-head">
       <h2><em>PLAYERS</em>選手名鑑</h2>
-      <p>規定到達の選手</p>
+      <p>規定到達の選手（写真は準備中）</p>
     </div>
     <div class="legend">
       <span><i class="f1"></i>1着</span><span><i class="f2"></i>2着</span><span><i class="f3"></i>3着</span><span><i class="f4"></i>4着</span>
     </div>
     <div class="cards" id="cards"></div>
-    <p class="swipe-hint">左右にスワイプすると他の選手が見られます</p>
   </section>
 
   <section id="matches">
@@ -292,7 +326,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
 
 <!-- 試合データ：[月-日, 選手名, 着順, 用紙の合計, 着順ポイントあり=1] -->
 <script id="nleague-data" type="application/json">
-{"updated":"2026-11-01","results":[["03-20","浅沼",1,42.7,0],["03-20","きょー",2,15.3,0],["03-20","本間",3,-5.0,0],["03-20","筒井",4,-53.0,0],["03-28","きょー",1,35.9,0],["03-28","うるし",2,15.2,0],["03-28","筒井",3,-16.2,0],["03-28","浅沼",4,-35.3,0],["04-25","きょー",1,22.4,0],["04-25","浅沼",2,-1.6,0],["04-25","松本",3,-13.5,0],["04-25","筒井",4,-17.3,0],["05-16","浅沼",1,13.4,0],["05-16","きょー",2,12.8,0],["05-16","田中",3,1.8,0],["05-16","筒井",4,-28.0,0],["05-31","きょー",1,29.4,0],["05-31","本間",2,3.7,0],["05-31","浅沼",3,-14.5,0],["05-31","田中",4,-18.6,0],["06-06","きょー",1,120,1],["06-06","なかじ",2,8,1],["06-06","たつ",3,-28,1],["06-06","中西",4,-100,1],["06-14","きょー",1,11.2,0],["06-14","関",2,2.2,0],["06-14","たつ",3,-2.0,0],["06-14","はる",4,-11.4,0],["06-20","筒井",1,31.8,0],["06-20","浅沼",2,7.6,0],["06-20","きょー",3,-14.3,0],["06-20","タクボ",4,-25.1,0],["06-21","はる",1,3,1],["06-21","たつ",2,-10,1],["06-21","中西",3,-12,1],["06-21","きょー",4,-41,1],["06-27","きょー",1,34.6,0],["06-27","田中",2,18.9,0],["06-27","浅沼",3,0.1,0],["06-27","タクボ",4,-57.8,0],["07-19","本間",1,24.1,0],["07-19","浅沼",2,9.4,0],["07-19","筒井",3,3.9,0],["07-19","きょー",4,-37.3,0],["07-24","きょー",1,41.1,0],["07-24","田中",2,36.7,0],["07-24","筒井",3,-28.9,0],["07-24","浅沼",4,-48.9,0],["07-25","たつ",1,62,1],["07-25","はる",2,17,1],["07-25","きょー",3,-35,1],["07-25","そうた",4,-75,1],["08-02","中西",1,115,1],["08-02","はる",2,-14,1],["08-02","きょー",3,-40,1],["08-02","たつ",4,-174,1],["08-09","たつ",1,51,1],["08-09","はる",2,10,1],["08-09","きょー",3,-63,1],["08-09","関",4,-77,1],["08-11","きょー",1,75,1],["08-11","はる",2,8,1],["08-11","たつ",3,-55,1],["08-11","中西",4,-107,1],["08-15","中西",1,85,1],["08-15","関",2,-7,1],["08-15","父",3,-83,1],["08-15","きょー",4,-118,1],["09-05","きょー",1,78.2,1],["09-05","浅沼",2,-6.7,1],["09-05","筒井",3,-13.8,1],["09-05","漆谷",4,-57.7,1],["09-20","きょー",1,47.1,0],["09-20","本間",2,-7.0,0],["09-20","浅沼",3,-15.8,0],["09-20","上村",4,-24.5,0],["09-25","浅沼",1,30.4,0],["09-25","きょー",2,19.7,0],["09-25","田中",3,4.0,0],["09-25","佐野",4,-53.8,0],["09-26","中西",1,76,1],["09-26","なかじ",2,60,1],["09-26","関",3,-42,1],["09-26","きょー",4,-94,1],["10-10","中西",1,131,1],["10-10","きょー",2,7,1],["10-10","たつ",3,-43,1],["10-10","なかじ",4,-95,1],["10-25","きょー",1,74,1],["10-25","はる",2,19,1],["10-25","たつ",3,-48,1],["10-25","エル",4,-76,1],["11-01","はる",1,84,1],["11-01","中西",2,10,1],["11-01","きょー",3,-9,1],["11-01","たつ",4,-83,1]]}
+{"updated":"2026-11-01","photos":{},"results":[["03-20","浅沼",1,42.7,0],["03-20","きょー",2,15.3,0],["03-20","本間",3,-5.0,0],["03-20","筒井",4,-53.0,0],["03-28","きょー",1,35.9,0],["03-28","うるし",2,15.2,0],["03-28","筒井",3,-16.2,0],["03-28","浅沼",4,-35.3,0],["04-25","きょー",1,22.4,0],["04-25","浅沼",2,-1.6,0],["04-25","松本",3,-13.5,0],["04-25","筒井",4,-17.3,0],["05-16","浅沼",1,13.4,0],["05-16","きょー",2,12.8,0],["05-16","田中",3,1.8,0],["05-16","筒井",4,-28.0,0],["05-31","きょー",1,29.4,0],["05-31","本間",2,3.7,0],["05-31","浅沼",3,-14.5,0],["05-31","田中",4,-18.6,0],["06-06","きょー",1,120,1],["06-06","なかじ",2,8,1],["06-06","たつ",3,-28,1],["06-06","中西",4,-100,1],["06-14","きょー",1,11.2,0],["06-14","関",2,2.2,0],["06-14","たつ",3,-2.0,0],["06-14","はる",4,-11.4,0],["06-20","筒井",1,31.8,0],["06-20","浅沼",2,7.6,0],["06-20","きょー",3,-14.3,0],["06-20","タクボ",4,-25.1,0],["06-21","はる",1,3,1],["06-21","たつ",2,-10,1],["06-21","中西",3,-12,1],["06-21","きょー",4,-41,1],["06-27","きょー",1,34.6,0],["06-27","田中",2,18.9,0],["06-27","浅沼",3,0.1,0],["06-27","タクボ",4,-57.8,0],["07-19","本間",1,24.1,0],["07-19","浅沼",2,9.4,0],["07-19","筒井",3,3.9,0],["07-19","きょー",4,-37.3,0],["07-24","きょー",1,41.1,0],["07-24","田中",2,36.7,0],["07-24","筒井",3,-28.9,0],["07-24","浅沼",4,-48.9,0],["07-25","たつ",1,62,1],["07-25","はる",2,17,1],["07-25","きょー",3,-35,1],["07-25","そうた",4,-75,1],["08-02","中西",1,115,1],["08-02","はる",2,-14,1],["08-02","きょー",3,-40,1],["08-02","たつ",4,-174,1],["08-09","たつ",1,51,1],["08-09","はる",2,10,1],["08-09","きょー",3,-63,1],["08-09","関",4,-77,1],["08-11","きょー",1,75,1],["08-11","はる",2,8,1],["08-11","たつ",3,-55,1],["08-11","中西",4,-107,1],["08-15","中西",1,85,1],["08-15","関",2,-7,1],["08-15","父",3,-83,1],["08-15","きょー",4,-118,1],["09-05","きょー",1,78.2,1],["09-05","浅沼",2,-6.7,1],["09-05","筒井",3,-13.8,1],["09-05","漆谷",4,-57.7,1],["09-20","きょー",1,47.1,0],["09-20","本間",2,-7.0,0],["09-20","浅沼",3,-15.8,0],["09-20","上村",4,-24.5,0],["09-25","浅沼",1,30.4,0],["09-25","きょー",2,19.7,0],["09-25","田中",3,4.0,0],["09-25","佐野",4,-53.8,0],["09-26","中西",1,76,1],["09-26","なかじ",2,60,1],["09-26","関",3,-42,1],["09-26","きょー",4,-94,1],["10-10","中西",1,131,1],["10-10","きょー",2,7,1],["10-10","たつ",3,-43,1],["10-10","なかじ",4,-95,1],["10-25","きょー",1,74,1],["10-25","はる",2,19,1],["10-25","たつ",3,-48,1],["10-25","エル",4,-76,1],["11-01","はる",1,84,1],["11-01","中西",2,10,1],["11-01","きょー",3,-9,1],["11-01","たつ",4,-83,1]]}
 </script>
 
 <script>
@@ -343,8 +377,28 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
   const refBtn = document.getElementById('refBtn');
   refBtn.textContent = `参考記録（2試合以下の${others.length}人）を表示`;
   refBtn.addEventListener('click', () => { showRef = !showRef; refBtn.textContent = showRef ? '参考記録を隠す' : `参考記録（2試合以下の${others.length}人）を表示`; refBtn.setAttribute('aria-expanded', showRef); renderTable(); });
+  const slist = document.getElementById('standList');
+  const msort = document.getElementById('msort');
+  function mobileRow(p){
+    const row = el('div','srow' + (p.q ? '' : ' ref'));
+    row.appendChild(el('div','pos' + (p.pos && p.pos <= 3 ? ' pos-'+p.pos : ''), p.pos ?? '—'));
+    const m = el('div','srow-main');
+    const h = el('div','srow-head'); h.appendChild(el('span','pname',p.name));
+    const a = el('span','srow-avg','平均着順'); a.appendChild(el('b','num',p.avg.toFixed(2))); h.appendChild(a); m.appendChild(h);
+    const c = el('div','srow-counts');
+    const t = el('span','','試合'); t.appendChild(el('b','num',p.n)); c.appendChild(t);
+    [p.c1,p.c2,p.c3,p.c4].forEach((v,i) => { const sp = el('span'); sp.appendChild(el('i','f'+(i+1))); sp.appendChild(document.createTextNode((i+1)+'着')); sp.appendChild(el('b','num',v)); c.appendChild(sp); });
+    m.appendChild(c);
+    const r = el('div','srow-rates');
+    [['トップ率',p.topRate],['連対率',p.rentai],['ラス回避率',p.avoid]].forEach(([k,v]) => { const d = el('div','',k); d.appendChild(el('b','num',pct(v))); r.appendChild(d); });
+    m.appendChild(r);
+    const f = el('div','srow-foot','直近5試合'); f.appendChild(formCell(p.form)); m.appendChild(f);
+    row.appendChild(m);
+    return row;
+  }
   function renderTable(){
-    tbody.replaceChildren();
+    tbody.replaceChildren(); slist.replaceChildren();
+    msort.value = ['pos','n','c1','topRate','rentai','avoid'].includes(sortKey) ? sortKey : 'pos';
     const cmp = (a,b) => {
       if (sortKey === 'pos') return 0;
       const va = a[sortKey], vb = b[sortKey];
@@ -359,13 +413,14 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
       tr.appendChild(el('td', 'l pname', p.name));
       tr.appendChild(el('td', '', p.n));
       tr.appendChild(el('td', '', p.avg.toFixed(2)));
-      tr.appendChild(el('td', '', p.c1)); tr.appendChild(el('td', 'hm', p.c2));
-      tr.appendChild(el('td', 'hm', p.c3)); tr.appendChild(el('td', 'hm', p.c4));
-      tr.appendChild(el('td', 'hm', pct(p.topRate)));
-      tr.appendChild(el('td', 'hm', pct(p.rentai)));
-      tr.appendChild(el('td', 'hm', pct(p.avoid)));
+      tr.appendChild(el('td', '', p.c1)); tr.appendChild(el('td', '', p.c2));
+      tr.appendChild(el('td', '', p.c3)); tr.appendChild(el('td', '', p.c4));
+      tr.appendChild(el('td', '', pct(p.topRate)));
+      tr.appendChild(el('td', '', pct(p.rentai)));
+      tr.appendChild(el('td', '', pct(p.avoid)));
       const fc = el('td','l'); fc.appendChild(formCell(p.form)); tr.appendChild(fc);
       tbody.appendChild(tr);
+      if (p.q || showRef) slist.appendChild(mobileRow(p));
     }));
     document.querySelectorAll('#standTbl th').forEach(th => {
       th.removeAttribute('aria-sort');
@@ -383,23 +438,32 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
     th.addEventListener('click', go);
     th.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
   });
+  msort.addEventListener('change', () => { sortKey = msort.value; sortDir = sortKey === 'pos' ? 1 : -1; renderTable(); });
   renderTable();
 
   // player cards
   const cards = document.getElementById('cards');
   const colors = ['var(--r1)','var(--r2)','var(--r3)','var(--r4)'];
+  const PHOTOS = raw.photos || {};
+  const SIL = '<svg viewBox="0 0 100 110" aria-hidden="true"><circle cx="50" cy="36" r="22" fill="#3a4865"/><path d="M8 110c0-26 19-42 42-42s42 16 42 42z" fill="#3a4865"/></svg>';
   for (const p of official) {
     const c = el('article', 'card' + (p.pos <= 3 ? ' q'+p.pos : ''));
-    const top = el('div','card-top');
-    const nm = el('div'); nm.appendChild(el('div','card-name',p.name)); nm.appendChild(el('div','card-sub',`${p.n}試合 · ${p.c1}トップ`));
-    top.appendChild(nm); top.appendChild(el('div','card-rank',p.pos));
-    c.appendChild(top);
+    const ph = el('div','card-photo');
+    if (PHOTOS[p.name]) { const img = new Image(); img.src = PHOTOS[p.name]; img.alt = p.name; img.loading = 'lazy'; ph.appendChild(img); }
+    else ph.insertAdjacentHTML('beforeend', SIL);
+    ph.appendChild(el('div','card-rank',p.pos));
+    const np = el('div','card-nameplate'); np.appendChild(el('div','card-name',p.name)); np.appendChild(el('div','card-sub',`${p.n}試合 · ${p.c1}トップ`));
+    ph.appendChild(np);
+    c.appendChild(ph);
     const dist = el('div','dist'); dist.setAttribute('aria-label', `着順の割合 1着${p.c1} 2着${p.c2} 3着${p.c3} 4着${p.c4}`);
-    [p.c1,p.c2,p.c3,p.c4].forEach((v,i) => { const s = el('span'); s.style.width = (v/p.n*100)+'%'; s.style.background = colors[i]; dist.appendChild(s); });
+    [p.c1,p.c2,p.c3,p.c4].forEach((v,i) => { const s2 = el('span'); s2.style.width = (v/p.n*100)+'%'; s2.style.background = colors[i]; dist.appendChild(s2); });
     c.appendChild(dist);
     const st = el('div','card-stats');
     [['平均着順',p.avg.toFixed(2)],['連対率',pct(p.rentai)],['ラス回避',pct(p.avoid)]].forEach(([k,v]) => { const d = el('div'); d.appendChild(el('b','num',v)); d.appendChild(el('span','',k)); st.appendChild(d); });
     c.appendChild(st);
+    const cc = el('div','card-counts');
+    [p.c1,p.c2,p.c3,p.c4].forEach((v,i) => { const sp = el('span'); sp.appendChild(el('i','f'+(i+1))); sp.appendChild(document.createTextNode(`${i+1}着${v}`)); cc.appendChild(sp); });
+    c.appendChild(cc);
     cards.appendChild(c);
   }
 
