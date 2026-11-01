@@ -311,6 +311,7 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
     <div class="rules">
       <div class="rule"><h3>順位の決め方</h3><p>その日の記録用紙の合計で1〜4着を決めます。計算方式（点数のみ／着順ポイントあり）は日によって違いますが、ルールが固まるまではそろえずに集計します。</p></div>
       <div class="rule"><h3>三麻の扱い</h3><p>三人麻雀（三麻）の結果は集計に含めていません。4人で打った半荘だけで、その日の順位を決めています。</p></div>
+      <div class="rule"><h3>試合結果の数字</h3><p>「点数のみ」の日は、その日の点数の増減の合計です（例：+30,400点）。「着順pt」の日は、用紙に書かれたポイントの合計です（点数を千点＝1ptにして、順位に応じたウマなどを足したもの。配分は日によって違います）。どちらもその日の順位を決めるためだけに使い、日をまたいで足し合わせてはいません。</p></div>
       <div class="rule"><h3>場代・オカ</h3><p>場代やオカを入れていない日も、用紙に書かれたとおりに扱っています。</p></div>
       <div class="rule"><h3>規定試合数</h3><p>順位表の対象は3試合以上出場した選手です。</p></div>
       <div class="rule"><h3>記録について</h3><p>用紙に年の記入がないため、日付は月/日で表示しています。10/23の試合は集計から外しています。</p></div>
@@ -484,12 +485,13 @@ footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;j
     for (const d of (showAll ? ds : ds.slice(0, PAGE))) {
       const g = games.get(d);
       const m = el('article','match' + (f && g[0].name === f ? ' hl' : ''));
-      const dt = el('div','match-date'); dt.appendChild(el('b','num',md(d))); dt.appendChild(el('span','',g[0].pt ? '着順pt' : '点数'));
+      const dt = el('div','match-date'); dt.appendChild(el('b','num',md(d))); dt.appendChild(el('span','',g[0].pt ? '着順pt' : '点数のみ'));
       m.appendChild(dt);
       const ol = el('ol');
       for (const r of g) {
         const li = el('li'); li.appendChild(el('i','',r.rank)); li.appendChild(el('span','mn',r.name));
-        const sc = r.score > 0 ? '+' + r.score : String(r.score);
+        const sign = r.score > 0 ? '+' : (r.score < 0 ? '−' : '±');
+        const sc = r.pt ? `${sign}${Math.abs(r.score)}pt` : `${sign}${Math.round(Math.abs(r.score) * 1000).toLocaleString('ja-JP')}点`;
         li.appendChild(el('small','num',sc));
         if (f && r.name === f) li.style.color = 'var(--gold-2)';
         ol.appendChild(li);
