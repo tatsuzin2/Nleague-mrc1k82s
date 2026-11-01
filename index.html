@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nリーグ 2026</title>
+<meta name="description" content="きょー宅で開催される麻雀リーグ「Nリーグ」の公式成績ページ。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 60%22%3E%3Crect x=%225%22 y=%227%22 width=%2241%22 height=%2251%22 rx=%228%22 fill=%22%2308402c%22/%3E%3Crect x=%222%22 y=%222%22 width=%2241%22 height=%2251%22 rx=%228%22 fill=%22%23f4f0e4%22/%3E%3Cpolygon points=%2211,42 11,13 18,13 27.5,29.5 27.5,13 34,13 34,42 27,42 17.5,25.5 17.5,42%22 fill=%22%230d5c3f%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* Layout: broadcast-style dark board — hero scoreboard, standings, player cards, match log */
+:root{
+  --ink:#0b0f1a; --deep:#111827; --panel:#161e2e; --line:#26324a;
+  --fg:#eef1f7; --muted:#8e9ab3; --gold:#d8b25a; --green:#0d5c3f; --green-hi:#1f8a60; --gold-2:#f2d58c;
+  --r1:#d8b25a; --r2:#b9c3d6; --r3:#c9875a; --r4:#5b6680; --bad:#e2565a;
+  --display:"Anton","Zen Kaku Gothic New",Impact,sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6}
+a{color:var(--gold-2)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+
+/* top bar */
+.bar{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e1424,var(--ink))}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.logo-mark{width:34px;height:42px;flex:none;transform:rotate(-6deg)}
+.hero-tile{width:clamp(64px,9vw,96px);height:auto;flex:none;transform:rotate(-6deg);filter:drop-shadow(0 8px 18px rgba(0,0,0,.45))}
+.hero-title{display:flex;align-items:center;gap:clamp(12px,2vw,22px);margin:6px 0 10px}
+.hero-title h1{margin:0}
+.logo-text{font-family:var(--display);font-size:22px;letter-spacing:.06em}
+.logo-text small{display:block;font-family:var(--body);font-size:10px;letter-spacing:.2em;color:var(--muted);margin-top:-4px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.08em;padding:6px 10px;border-radius:2px}
+nav a:hover,nav a:focus-visible{color:var(--fg);background:var(--panel);outline:none}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(115deg,transparent 0 22px,rgba(216,178,90,.045) 22px 23px),
+  radial-gradient(80% 120% at 85% 0%,rgba(216,178,90,.18),transparent 60%);pointer-events:none}
+.hero .wrap{position:relative;padding-block:40px 32px;display:grid;gap:28px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:end}
+.season{font-size:12px;letter-spacing:.3em;color:var(--gold);font-weight:700}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(44px,8vw,88px);line-height:.95;margin:6px 0 10px;letter-spacing:.02em}
+.hero h1 span{color:var(--gold)}
+.hero h1 .n{color:var(--green-hi)}
+.hero p{margin:0;color:var(--muted);max-width:34em}
+.leader{background:linear-gradient(135deg,#1b2438,#121a2a);border:1px solid var(--line);border-top:3px solid var(--gold);padding:18px 20px;display:grid;gap:6px;min-width:0}
+.leader-label{font-size:11px;letter-spacing:.25em;color:var(--gold);font-weight:700}
+.leader-name{font-size:clamp(26px,4vw,36px);font-weight:900;line-height:1.1;overflow-wrap:anywhere}
+.leader-stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:6px}
+.leader-stats div{display:grid}
+.leader-stats b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1}
+.leader-stats span{font-size:11px;color:var(--muted);letter-spacing:.1em}
+
+.hero .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding-block:0;align-items:stretch;border-top:1px solid var(--line)}
+.kpi{padding:14px 16px;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+.kpi b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1}
+.kpi span{font-size:11px;color:var(--muted);letter-spacing:.12em}
+
+section{padding-block:44px 8px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;border-bottom:2px solid var(--gold);padding-bottom:8px}
+.sec-head h2{margin:0;font-size:22px;font-weight:900;letter-spacing:.06em}
+.sec-head h2 em{font-style:normal;font-family:var(--display);font-weight:400;color:var(--gold);margin-right:10px;letter-spacing:.08em}
+.sec-head p{margin:0;font-size:12px;color:var(--muted)}
+
+/* standings */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--deep)}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700;text-align:right;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+th.l,td.l{text-align:left}
+th[aria-sort] ::after{content:""}
+th[aria-sort="ascending"]::after{content:" ▲";color:var(--gold)}
+th[aria-sort="descending"]::after{content:" ▼";color:var(--gold)}
+td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:#1a2336}
+.pos{font-family:var(--display);font-size:22px;font-weight:400;width:56px}
+.pos-1{color:var(--r1)} .pos-2{color:var(--r2)} .pos-3{color:var(--r3)}
+.pname{font-weight:900;font-size:16px}
+tr.ref td{color:var(--muted)} tr.ref .pname{font-weight:500}
+.form{display:inline-flex;gap:3px}
+.form i{width:18px;height:18px;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900;color:var(--ink);border-radius:2px}
+.f1{background:var(--r1)} .f2{background:var(--r2)} .f3{background:var(--r3)} .f4{background:var(--r4);color:var(--fg)!important}
+.cut td{border-top:2px dashed var(--line)}
+.note{font-size:12px;color:var(--muted);margin:10px 0 0}
+
+/* players */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.card{background:var(--deep);border:1px solid var(--line);position:relative;overflow:hidden;display:grid;min-width:0}
+.card-top{padding:16px 16px 12px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start;background:linear-gradient(160deg,#1c263b,var(--deep))}
+.card-rank{font-family:var(--display);font-size:46px;line-height:.9;color:var(--line)}
+.card.q1 .card-rank{color:var(--r1)} .card.q2 .card-rank{color:var(--r2)} .card.q3 .card-rank{color:var(--r3)}
+.card-name{font-size:20px;font-weight:900;line-height:1.2;overflow-wrap:anywhere}
+.card-sub{font-size:11px;color:var(--muted);letter-spacing:.1em}
+.dist{display:flex;height:8px;margin:0 16px;background:var(--panel)}
+.dist span{display:block;height:100%}
+.card-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:12px 16px 16px;gap:8px}
+.card-stats div{display:grid}
+.card-stats b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1}
+.card-stats span{font-size:10px;color:var(--muted);letter-spacing:.1em}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:12px}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+
+/* matches */
+.filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.filter label{font-size:12px;color:var(--muted)}
+select{background:var(--panel);color:var(--fg);border:1px solid var(--line);padding:6px 10px;font:inherit;font-size:13px;border-radius:2px}
+select:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.matches{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.match{background:var(--deep);border:1px solid var(--line);display:grid;grid-template-columns:72px 1fr}
+.match-date{background:var(--panel);display:grid;place-content:center;text-align:center;border-right:1px solid var(--line);padding:8px 4px}
+.match-date b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1}
+.match-date span{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-top:4px}
+.match ol{list-style:none;margin:0;padding:8px 12px;display:grid;gap:2px}
+.match li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:14px}
+.match li i{font-style:normal;font-family:var(--display);font-size:16px;text-align:center}
+.match li:nth-child(1) i{color:var(--r1)} .match li:nth-child(2) i{color:var(--r2)} .match li:nth-child(3) i{color:var(--r3)} .match li:nth-child(4) i{color:var(--r4)}
+.match li:nth-child(1) .mn{font-weight:900}
+.match li small{color:var(--muted);font-size:12px}
+.match.hl{border-color:var(--gold)}
+
+/* rules */
+.rules{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.rule{background:var(--deep);border:1px solid var(--line);padding:16px}
+.rule h3{margin:0 0 6px;font-size:14px;color:var(--gold);letter-spacing:.08em}
+.rule p{margin:0;font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:48px}
+footer .wrap{padding-block:20px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:760px){
+  .hero .wrap{grid-template-columns:1fr}
+  .hero .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi:nth-child(2){border-right:0}
+  .kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .card,.match{transition:transform .15s ease,border-color .15s ease}
+  .card:hover{transform:translateY(-2px);border-color:var(--gold)}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Nリーグ トップ">
+      <svg class="logo-mark" viewBox="0 0 48 60" aria-hidden="true">
+  <rect x="5" y="7" width="41" height="51" rx="8" fill="#08402c"/>
+  <rect x="2" y="2" width="41" height="51" rx="8" fill="#f4f0e4"/>
+  <rect x="5.5" y="5.5" width="34" height="44" rx="5" fill="none" stroke="#0d5c3f" stroke-width="1" opacity=".35"/>
+  <polygon points="11,42 11,13 18,13 27.5,29.5 27.5,13 34,13 34,42 27,42 17.5,25.5 17.5,42" fill="#0d5c3f"/>
+  <polygon points="27.5,13 34,13 34,19 27.5,19" fill="#0a4a33"/>
+</svg>
+      <div class="logo-text">N LEAGUE<small>HOUSE MAHJONG LEAGUE</small></div>
+    </a>
+    <nav aria-label="ページ内">
+      <a href="#standings">順位表</a>
+      <a href="#players">選手</a>
+      <a href="#matches">試合結果</a>
+      <a href="#rules">ルール</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="season">2026 REGULAR SEASON</div>
+      <div class="hero-title"><svg class="hero-tile" viewBox="0 0 48 60" aria-hidden="true">
+  <rect x="5" y="7" width="41" height="51" rx="8" fill="#08402c"/>
+  <rect x="2" y="2" width="41" height="51" rx="8" fill="#f4f0e4"/>
+  <rect x="5.5" y="5.5" width="34" height="44" rx="5" fill="none" stroke="#0d5c3f" stroke-width="1" opacity=".35"/>
+  <polygon points="11,42 11,13 18,13 27.5,29.5 27.5,13 34,13 34,42 27,42 17.5,25.5 17.5,42" fill="#0d5c3f"/>
+  <polygon points="27.5,13 34,13 34,19 27.5,19" fill="#0a4a33"/>
+</svg><h1><span class="n">N</span><span>リーグ</span></h1></div>
+      <p>きょー宅で開かれる麻雀リーグの公式成績ページ。順位表は、各試合の着順だけで決まります。</p>
+    </div>
+    <div class="leader" aria-live="polite">
+      <div class="leader-label">現在の首位</div>
+      <div class="leader-name" id="leaderName">—</div>
+      <div class="leader-stats">
+        <div><b class="num" id="leaderAvg">—</b><span>平均着順</span></div>
+        <div><b class="num" id="leaderTop">—</b><span>トップ</span></div>
+        <div><b class="num" id="leaderN">—</b><span>試合</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap kpis">
+    <div class="kpi"><b class="num" id="kGames">—</b><span>開催試合</span></div>
+    <div class="kpi"><b class="num" id="kPlayers">—</b><span>出場選手</span></div>
+    <div class="kpi"><b class="num" id="kQualified">—</b><span>規定到達（3試合以上）</span></div>
+    <div class="kpi"><b class="num" id="kLatest">—</b><span>最新試合</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="standings">
+    <div class="sec-head">
+      <h2><em>STANDINGS</em>順位表</h2>
+      <p>見出しをクリックで並べ替え</p>
+    </div>
+    <div class="tbl-wrap">
+      <table id="standTbl">
+        <thead><tr>
+          <th class="l" data-k="pos">順位</th>
+          <th class="l" data-k="name">選手</th>
+          <th data-k="n">試合</th>
+          <th data-k="avg">平均着順</th>
+          <th data-k="c1">1着</th>
+          <th data-k="c2">2着</th>
+          <th data-k="c3">3着</th>
+          <th data-k="c4">4着</th>
+          <th data-k="topRate">トップ率</th>
+          <th data-k="rentai">連対率</th>
+          <th data-k="avoid">ラス回避率</th>
+          <th class="l" data-k="form">直近5試合</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note">3試合以上出場した選手を平均着順の小さい順に並べています（同じ場合はトップ数の多い順）。2試合以下の選手は点線の下に参考として載せています。</p>
+  </section>
+
+  <section id="players">
+    <div class="sec-head">
+      <h2><em>PLAYERS</em>選手名鑑</h2>
+      <p>規定到達の選手</p>
+    </div>
+    <div class="legend">
+      <span><i class="f1"></i>1着</span><span><i class="f2"></i>2着</span><span><i class="f3"></i>3着</span><span><i class="f4"></i>4着</span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="matches">
+    <div class="sec-head">
+      <h2><em>RESULTS</em>試合結果</h2>
+      <p>新しい順</p>
+    </div>
+    <div class="filter">
+      <label for="who">選手で絞り込む</label>
+      <select id="who"><option value="">全選手</option></select>
+    </div>
+    <div class="matches" id="matchList"></div>
+  </section>
+
+  <section id="rules">
+    <div class="sec-head">
+      <h2><em>RULES</em>集計ルール</h2>
+    </div>
+    <div class="rules">
+      <div class="rule"><h3>順位の決め方</h3><p>その日の記録用紙の合計で1〜4着を決めます。計算方式（点数のみ／着順ポイントあり）は日によって違いますが、ルールが固まるまではそろえずに集計します。</p></div>
+      <div class="rule"><h3>場代・オカ</h3><p>場代やオカを入れていない日も、用紙に書かれたとおりに扱っています。</p></div>
+      <div class="rule"><h3>規定試合数</h3><p>順位表の対象は3試合以上出場した選手です。</p></div>
+      <div class="rule"><h3>記録について</h3><p>用紙に年の記入がないため、日付は月/日で表示しています。10/23の試合は集計から外しています。</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Nリーグ · きょー宅</span>
+    <span id="updated"></span>
+  </div>
+</footer>
+
+<!-- 試合データ：[月-日, 選手名, 着順, 用紙の合計, 着順ポイントあり=1] -->
+<script id="nleague-data" type="application/json">
+{"updated":"2026-11-01","results":[["03-20","浅沼",1,42.7,0],["03-20","きょー",2,15.3,0],["03-20","本間",3,-5.0,0],["03-20","筒井",4,-53.0,0],["03-28","きょー",1,35.9,0],["03-28","うるし",2,15.2,0],["03-28","筒井",3,-16.2,0],["03-28","浅沼",4,-35.3,0],["04-25","きょー",1,22.4,0],["04-25","浅沼",2,-1.6,0],["04-25","松本",3,-13.5,0],["04-25","筒井",4,-17.3,0],["05-16","浅沼",1,13.4,0],["05-16","きょー",2,12.8,0],["05-16","田中",3,1.8,0],["05-16","筒井",4,-28.0,0],["05-31","きょー",1,29.4,0],["05-31","本間",2,3.7,0],["05-31","浅沼",3,-14.5,0],["05-31","田中",4,-18.6,0],["06-06","きょー",1,120,1],["06-06","なかじ",2,8,1],["06-06","たつ",3,-28,1],["06-06","中西",4,-100,1],["06-14","きょー",1,11.2,0],["06-14","関",2,2.2,0],["06-14","たつ",3,-2.0,0],["06-14","はる",4,-11.4,0],["06-20","筒井",1,23.8,0],["06-20","きょー",2,10.7,0],["06-20","浅沼",3,-9.4,0],["06-20","タクボ",4,-25.1,0],["06-21","はる",1,3,1],["06-21","たつ",2,-10,1],["06-21","中西",3,-12,1],["06-21","きょー",4,-41,1],["06-27","きょー",1,34.6,0],["06-27","田中",2,18.9,0],["06-27","浅沼",3,0.1,0],["06-27","タクボ",4,-57.8,0],["07-19","本間",1,24.1,0],["07-19","浅沼",2,9.4,0],["07-19","筒井",3,3.9,0],["07-19","きょー",4,-37.3,0],["07-24","きょー",1,41.1,0],["07-24","田中",2,36.7,0],["07-24","筒井",3,-28.9,0],["07-24","浅沼",4,-48.9,0],["07-25","たつ",1,62,1],["07-25","はる",2,17,1],["07-25","きょー",3,-35,1],["07-25","そうた",4,-75,1],["08-02","中西",1,115,1],["08-02","はる",2,-14,1],["08-02","きょー",3,-40,1],["08-02","たつ",4,-174,1],["08-09","たつ",1,51,1],["08-09","はる",2,10,1],["08-09","きょー",3,-63,1],["08-09","関",4,-77,1],["08-11","きょー",1,75,1],["08-11","はる",2,8,1],["08-11","たつ",3,-55,1],["08-11","中西",4,-107,1],["08-15","中西",1,85,1],["08-15","関",2,-7,1],["08-15","父",3,-83,1],["08-15","きょー",4,-118,1],["09-05","きょー",1,78.2,1],["09-05","浅沼",2,-6.7,1],["09-05","筒井",3,-13.8,1],["09-05","漆谷",4,-57.7,1],["09-20","きょー",1,47.1,0],["09-20","本間",2,-7.0,0],["09-20","浅沼",3,-15.8,0],["09-20","上村",4,-24.5,0],["09-25","浅沼",1,30.4,0],["09-25","きょー",2,19.7,0],["09-25","田中",3,4.0,0],["09-25","佐野",4,-53.8,0],["09-26","中西",1,76,1],["09-26","なかじ",2,60,1],["09-26","関",3,-42,1],["09-26","きょー",4,-94,1],["10-10","中西",1,131,1],["10-10","きょー",2,7,1],["10-10","たつ",3,-43,1],["10-10","なかじ",4,-95,1],["10-25","きょー",1,74,1],["10-25","はる",2,19,1],["10-25","たつ",3,-48,1],["10-25","エル",4,-76,1],["11-01","はる",1,84,1],["11-01","中西",2,10,1],["11-01","きょー",3,-9,1],["11-01","たつ",4,-83,1]]}
+</script>
+
+<script>
+(function(){
+  const QUAL = 3;
+  const raw = JSON.parse(document.getElementById('nleague-data').textContent);
+  const R = raw.results.map(([d,name,rank,score,pt]) => ({d,name,rank,score,pt}));
+  const md = (d) => { const [m,day] = d.split('-'); return `${+m}/${+day}`; };
+  const pct = (v) => (v*100).toFixed(1) + '%';
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  // games
+  const games = new Map();
+  for (const r of R) { if (!games.has(r.d)) games.set(r.d, []); games.get(r.d).push(r); }
+  const dates = [...games.keys()].sort();
+  for (const g of games.values()) g.sort((a,b) => a.rank - b.rank);
+
+  // players
+  const P = new Map();
+  for (const d of dates) for (const r of games.get(d)) {
+    const p = P.get(r.name) || {name:r.name, n:0, c1:0, c2:0, c3:0, c4:0, sum:0, seq:[]};
+    p.n++; p.sum += r.rank; p['c'+r.rank]++; p.seq.push(r.rank); P.set(r.name, p);
+  }
+  const players = [...P.values()].map(p => ({...p,
+    avg: p.sum/p.n, topRate: p.c1/p.n, rentai: (p.c1+p.c2)/p.n, avoid: 1 - p.c4/p.n,
+    q: p.n >= QUAL, form: p.seq.slice(-5)}));
+  const official = players.filter(p => p.q).sort((a,b) => a.avg-b.avg || b.c1-a.c1 || b.n-a.n);
+  official.forEach((p,i) => p.pos = i+1);
+  const others = players.filter(p => !p.q).sort((a,b) => b.n-a.n || a.avg-b.avg);
+  others.forEach(p => p.pos = null);
+
+  // hero
+  const L = official[0];
+  document.getElementById('leaderName').textContent = L.name;
+  document.getElementById('leaderAvg').textContent = L.avg.toFixed(2);
+  document.getElementById('leaderTop').textContent = L.c1;
+  document.getElementById('leaderN').textContent = L.n;
+  document.getElementById('kGames').textContent = dates.length;
+  document.getElementById('kPlayers').textContent = players.length;
+  document.getElementById('kQualified').textContent = official.length;
+  document.getElementById('kLatest').textContent = md(dates[dates.length-1]);
+  document.getElementById('updated').textContent = '最終更新 ' + raw.updated.replace(/-/g,'.');
+
+  // standings
+  const tbody = document.querySelector('#standTbl tbody');
+  const formCell = (seq) => { const s = el('span','form'); for (const k of seq) s.appendChild(el('i','f'+k,k)); return s; };
+  let sortKey = 'pos', sortDir = 1;
+  function renderTable(){
+    tbody.replaceChildren();
+    const cmp = (a,b) => {
+      if (sortKey === 'pos') return 0;
+      const va = a[sortKey], vb = b[sortKey];
+      return (typeof va === 'string' ? va.localeCompare(vb,'ja') : va - vb) * sortDir;
+    };
+    const blocks = sortKey === 'pos' ? [official, others] : [[...official].sort(cmp), [...others].sort(cmp)];
+    blocks.forEach((list, bi) => list.forEach((p, i) => {
+      const tr = el('tr', p.q ? '' : 'ref');
+      if (bi === 1 && i === 0) tr.classList.add('cut');
+      tr.appendChild(el('td', 'l pos' + (p.pos && p.pos <= 3 ? ' pos-'+p.pos : ''), p.pos ?? '—'));
+      tr.appendChild(el('td', 'l pname', p.name));
+      tr.appendChild(el('td', '', p.n));
+      tr.appendChild(el('td', '', p.avg.toFixed(2)));
+      tr.appendChild(el('td', '', p.c1)); tr.appendChild(el('td', '', p.c2));
+      tr.appendChild(el('td', '', p.c3)); tr.appendChild(el('td', '', p.c4));
+      tr.appendChild(el('td', '', pct(p.topRate)));
+      tr.appendChild(el('td', '', pct(p.rentai)));
+      tr.appendChild(el('td', '', pct(p.avoid)));
+      const fc = el('td','l'); fc.appendChild(formCell(p.form)); tr.appendChild(fc);
+      tbody.appendChild(tr);
+    }));
+    document.querySelectorAll('#standTbl th').forEach(th => {
+      th.removeAttribute('aria-sort');
+      if (th.dataset.k === sortKey && sortKey !== 'pos') th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+    });
+  }
+  document.querySelectorAll('#standTbl th').forEach(th => {
+    th.tabIndex = 0;
+    const go = () => {
+      const k = th.dataset.k; if (k === 'form') return;
+      if (k === sortKey) sortDir = -sortDir;
+      else { sortKey = k; sortDir = ['avg','name','pos'].includes(k) ? 1 : -1; }
+      renderTable();
+    };
+    th.addEventListener('click', go);
+    th.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+  renderTable();
+
+  // player cards
+  const cards = document.getElementById('cards');
+  const colors = ['var(--r1)','var(--r2)','var(--r3)','var(--r4)'];
+  for (const p of official) {
+    const c = el('article', 'card' + (p.pos <= 3 ? ' q'+p.pos : ''));
+    const top = el('div','card-top');
+    const nm = el('div'); nm.appendChild(el('div','card-name',p.name)); nm.appendChild(el('div','card-sub',`${p.n}試合 · ${p.c1}トップ`));
+    top.appendChild(nm); top.appendChild(el('div','card-rank',p.pos));
+    c.appendChild(top);
+    const dist = el('div','dist'); dist.setAttribute('aria-label', `着順の割合 1着${p.c1} 2着${p.c2} 3着${p.c3} 4着${p.c4}`);
+    [p.c1,p.c2,p.c3,p.c4].forEach((v,i) => { const s = el('span'); s.style.width = (v/p.n*100)+'%'; s.style.background = colors[i]; dist.appendChild(s); });
+    c.appendChild(dist);
+    const st = el('div','card-stats');
+    [['平均着順',p.avg.toFixed(2)],['連対率',pct(p.rentai)],['ラス回避',pct(p.avoid)]].forEach(([k,v]) => { const d = el('div'); d.appendChild(el('b','num',v)); d.appendChild(el('span','',k)); st.appendChild(d); });
+    c.appendChild(st);
+    cards.appendChild(c);
+  }
+
+  // matches
+  const who = document.getElementById('who');
+  [...players].sort((a,b) => b.n-a.n || a.name.localeCompare(b.name,'ja')).forEach(p => who.appendChild(new Option(`${p.name}（${p.n}）`, p.name)));
+  const list = document.getElementById('matchList');
+  function renderMatches(){
+    list.replaceChildren();
+    const f = who.value;
+    for (const d of [...dates].reverse()) {
+      const g = games.get(d);
+      if (f && !g.some(r => r.name === f)) continue;
+      const m = el('article','match' + (f && g[0].name === f ? ' hl' : ''));
+      const dt = el('div','match-date'); dt.appendChild(el('b','num',md(d))); dt.appendChild(el('span','',g[0].pt ? '着順pt' : '点数'));
+      m.appendChild(dt);
+      const ol = el('ol');
+      for (const r of g) {
+        const li = el('li'); li.appendChild(el('i','',r.rank)); li.appendChild(el('span','mn',r.name));
+        const sc = r.score > 0 ? '+' + r.score : String(r.score);
+        li.appendChild(el('small','num',sc));
+        if (f && r.name === f) li.style.color = 'var(--gold-2)';
+        ol.appendChild(li);
+      }
+      m.appendChild(ol);
+      list.appendChild(m);
+    }
+  }
+  who.addEventListener('change', renderMatches);
+  renderMatches();
+})();
+</script>
+</body>
+</html>
