@@ -116,9 +116,8 @@ tr.ref td{color:var(--muted)} tr.ref .pname{font-weight:500}
 .card-photo{position:relative;aspect-ratio:4/5;background:radial-gradient(120% 90% at 50% 20%,#24304a,#121a2a 70%);overflow:hidden}
 .card-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 .card-photo svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:72%;height:auto;opacity:.5}
-.card-photo::before{content:"";position:absolute;inset:0 0 auto 0;height:38%;background:linear-gradient(rgba(11,15,26,.78),rgba(11,15,26,.35) 55%,transparent);pointer-events:none;z-index:0}
 .card-photo::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(11,15,26,.92));pointer-events:none}
-.card-rank{position:absolute;top:8px;left:10px;z-index:2;font-family:var(--display);font-size:clamp(30px,6vw,44px);line-height:1;color:var(--fg);text-shadow:0 1px 2px rgba(0,0,0,.9),0 2px 10px rgba(0,0,0,.7)}
+.card-rank{position:absolute;top:8px;left:10px;z-index:2;font-family:var(--display);font-size:clamp(30px,6vw,44px);line-height:1;color:var(--fg);text-shadow:0 0 2px rgba(0,0,0,.95),0 1px 4px rgba(0,0,0,.9),0 2px 16px rgba(0,0,0,.85)}
 .card.q1 .card-rank{color:var(--r1)} .card.q2 .card-rank{color:var(--r2)} .card.q3 .card-rank{color:var(--r3)}
 .card-nameplate{position:absolute;left:12px;right:12px;bottom:10px;z-index:2}
 .card-name{font-size:clamp(17px,3.2vw,22px);font-weight:900;line-height:1.2;overflow-wrap:anywhere;text-shadow:0 2px 8px rgba(0,0,0,.6)}
